@@ -7,7 +7,18 @@ static _HELLO: &[u8] = b"Hello World";
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    vga_buffer::print_something();
+    use core::fmt::Write;
+    vga_buffer::WRITER
+        .lock()
+        .write_str("Hello Again\n")
+        .unwrap();
+    write!(
+        vga_buffer::WRITER.lock(),
+        "Here are some cool numbers: \n{} \n{}",
+        42,
+        1.254
+    )
+    .unwrap();
 
     loop {}
 }
