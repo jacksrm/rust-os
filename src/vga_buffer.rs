@@ -1,5 +1,6 @@
 use core::fmt;
 use lazy_static::lazy_static;
+use spin::Mutex;
 use volatile::Volatile;
 
 /// The height of the VGA Memory
@@ -12,11 +13,11 @@ const BUFFER_WIDTH: usize = 80;
 const VGA_BUFFER_ADDR: usize = 0xb8000;
 
 lazy_static! {
-    pub static ref WRITER: Writer = Writer {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
         buffer: unsafe { &mut *(VGA_BUFFER_ADDR as *mut Buffer) },
-    };
+    });
 }
 
 /// Color code matching the VGA Video Memory standard
