@@ -25,25 +25,6 @@ fn panic(info: &PanicInfo) -> ! {
     loop {}
 }
 
-mod vga_buffer;
-
-#[cfg(test)]
-pub fn test_runner(tests: &[&dyn Fn()]) {
-    println!("Running {} tests", tests.len());
-    for test in tests {
-        test();
-    }
-
-    exit_qemu(QemuExitCode::Success);
-}
-
-#[test_case]
-fn trivial_assertion() {
-    print!("Trivial Assertion... ");
-    assert_eq!(1, 1);
-    println!("[ok]");
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
@@ -59,3 +40,23 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         port.write(exit_code as u32);
     }
 }
+
+#[cfg(test)]
+pub fn test_runner(tests: &[&dyn Fn()]) {
+    serial_println!("Running {} tests", tests.len());
+    for test in tests {
+        test();
+    }
+
+    exit_qemu(QemuExitCode::Success);
+}
+
+#[test_case]
+fn trivial_assertion() {
+    serial_print!("Trivial Assertion... ");
+    assert_eq!(0, 1);
+    serial_println!("[ok]");
+}
+
+mod serial;
+mod vga_buffer;
