@@ -6,13 +6,8 @@
 
 use core::panic::PanicInfo;
 
-static _HELLO: &[u8] = b"Hello World";
-
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World{}", "!");
-    // panic!("Something went wrong!");
-
     #[cfg(test)]
     test_main();
 
